@@ -24,3 +24,18 @@ Once the setup is complete and the application is running, you will be able to s
 
 ## Usage
 After starting the application, simply navigate to the home page where you can input the abstract of an article and get the predicted category in return.
+
+## Limitations
+
+The model has been evaluated using several metrics, including accuracy, precision, recall, F1 score, Hamming score, and Hamming loss (considering that this is a multilabel classification problem)
+
+The evaluation results reveal areas for improvement. While precision scores are relatively high, recall is low, which reduces the F1 score. This indicates that while the model is good at identifying relevant labels when it makes predictions, it misses many true labels, suggesting a need for better balance between precision and recall. Overall, accuracy also needs improvement.
+
+One way to enhance the model’s performance is through hyperparameter tuning. With more time for training and more computational resources, it should be possible to fine-tune the parameters, leading to improved results. 
+
+Additionally, the dataset's imbalanced nature presents a significant challenge. Although this reflects real-world scenarios, it hampers the model's ability to classify underrepresented categories. For instance, some categories appear only six times in the dataset, making it difficult for the model to learn and predict these categories effectively. As a result, the model tends to favor categories it has seen more frequently, and it may struggle with categories it has seen less often, even with hyperparameter optimization.
+
+There are methods to mitigate this imbalance, such as resampling techniques to balance the dataset or applying data augmentation to generate more instances of underrepresented classes. These approaches could help the model achieve better generalization across all categories.
+
+Finally, the selection of learning rate and batch size has also impacted the results. It is possible that the model may have become stuck in a local minimum during training. Experimenting with a different optimizer, perhaps one more specialized than Adam, and exploring momentum adjustments, could also lead to better performance.
+

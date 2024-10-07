@@ -5,6 +5,8 @@ This application provides a **Django Rest Framework (DRF) API** that leverages a
 
 ## Setup
 
+Python version used: 3.12.4
+
 ### 1. Install Required Packages
 All necessary dependencies are listed in the `requirements.txt` file. To install them, simply run the following command:
 ```bash

@@ -4,6 +4,14 @@ import numpy as np
 import pickle
 from sklearn.preprocessing import MultiLabelBinarizer
 import itertools
+import re
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
+import nltk
+
+#Download the needed packages 
+nltk.download("stopwords")
+nltk.download("wordnet")
 
 # Add our custom model definition
 class DistilBERTClass(torch.nn.Module):
@@ -24,13 +32,13 @@ class DistilBERTClass(torch.nn.Module):
         output = self.classifier(pooler)
         return output
 
-# Initialize model
+# Initialize and load model
 model = DistilBERTClass()
 device = torch.device('cpu')
 model.load_state_dict(torch.load('api/model-finetuned/distilber_multilabel_state.pth', map_location=device, weights_only=True))
 model.eval()
 
-# Load tokenizer and model
+# Load tokenizer
 tokenizer = AutoTokenizer.from_pretrained('api/model-finetuned/Tokenizer')
 
 ## Load categories
@@ -41,21 +49,42 @@ with open('api/model-finetuned/mlb_classes.pkl', 'rb') as f:
 mlb = MultiLabelBinarizer()
 mlb.classes_ = classes
 
+#Needed for text pre-processing
+stop_words = set(stopwords.words('english'))
+lemmatizer = WordNetLemmatizer()
+
+def remove_stop_words(text):
+    word_list = text.split()
+    return ' '.join([lemmatizer.lemmatize(word) for word in word_list if word not in stop_words])
+
 
 def predict_categories(abstract):
-     # Step 3: Preprocess the abstract (tokenization)
+     #Preprocess the abstract 
+    # Remove the newline characters
+    abstract = abstract.replace('\n', ' ').strip()
+
+    # Remove special characters
+    abstract = re.sub(r'[^\w\s]', '', abstract)
+
+    # Convert to lowercase
+    abstract = abstract.lower()
+
+    #Perform lemmatization
+    abstract = remove_stop_words(abstract)
+
+     #Tokenization
     inputs = tokenizer(abstract, return_tensors='pt', truncation=True, padding=True)
     fin_outputs=[]
     # Step 4: Make prediction with the model
     with torch.no_grad():
         outputs = model(**inputs)
         fin_outputs.extend(torch.sigmoid(outputs).cpu().detach().numpy().tolist())
-    print(fin_outputs)
-    # Step 5: Process the output (logits) to predicted categories
+
+    #Process the output to predicted categories
     final_outputs = np.array(fin_outputs) >=0.5
     final_outputs = final_outputs.astype(int)
-    print(final_outputs)
     predicted_categories_nested = mlb.inverse_transform(final_outputs)
     predicted_categories = list(itertools.chain(*predicted_categories_nested))
-
-    return predicted_categories
+    if predicted_categories:
+        return predicted_categories
+    return "No categories detected for this abstract"

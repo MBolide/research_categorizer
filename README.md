@@ -17,7 +17,7 @@ In order to make predictions, the model, tokenizer, and classification dictionar
 
 **Instructions**:
 - Unzip the `model-finetuned` folder.
-- Place the unzipped folder inside the `api` directory of the project.
+- Place the unzipped folder inside the `api` directory of the project. The folder sturcture becomes api/model-finetuned/...
   
 This step is crucial.
 

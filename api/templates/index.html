@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Article Classifier</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <style>
+      body {
+        background-color: #343a40;
+        color: white;
+        margin-top: 100px;
+      }
+
+      #abstractInput {
+        width: 600px;
+        height: 200px;
+        overflow-y: auto;
+        resize: none;
+      }
+
+      #response {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body class="d-flex align-items-center py-4">
+    <main class="form-signin m-auto">
+      <div id="abstractForm">
+        <h1 class="h3 mb-3 fw-normal">Article Classifier</h1>
+        <textarea
+          id="abstractInput"
+          class="form-control"
+          aria-label="Abstract"
+          placeholder="Enter the abstract of the article..."
+        ></textarea>
+        <button
+          class="btn btn-primary w-100 py-2 my-2"
+          type="button"
+          onclick="submitAbstract()"
+        >
+          Submit
+        </button>
+        <p class="text-center" id="response"></p>
+      </div>
+    </main>
+
+    <script>
+      function submitAbstract() {
+        var abstract = document.getElementById('abstractInput').value;
+        if (!abstract) {
+          document.getElementById('response').innerText =
+            'Please enter the abstract of the article you want to classify';
+          return; // Stop submission if input is empty
+        }
+        // Send plain text input using Fetch API
+        fetch('/predict/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ abstract: abstract }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            // Show the result to the user
+            document.getElementById(
+              'response'
+            ).innerText = `Predicted Categories: ${data.predicted_categories}`;
+          })
+          .catch((error) => {
+            document.getElementById('response').innerText = 'Error: ' + error;
+          });
+      }
+    </script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

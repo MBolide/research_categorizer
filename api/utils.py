@@ -35,7 +35,7 @@ class DistilBERTClass(torch.nn.Module):
 # Initialize and load model
 model = DistilBERTClass()
 device = torch.device('cpu')
-model.load_state_dict(torch.load('api/model-finetuned/distilber_multilabel_state.pth', map_location=device, weights_only=True))
+model.load_state_dict(torch.load('api/model-finetuned/distilbert_multilabel_state.pth', map_location=device, weights_only=True))
 model.eval()
 
 # Load tokenizer

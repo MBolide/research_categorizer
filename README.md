@@ -37,5 +37,9 @@ Additionally, the dataset's imbalanced nature presents a significant challenge. 
 
 There are methods to mitigate this imbalance, such as resampling techniques to balance the dataset or applying data augmentation to generate more instances of underrepresented classes. These approaches could help the model achieve better generalization across all categories.
 
-Finally, the selection of learning rate and batch size has also impacted the results. It is possible that the model may have become stuck in a local minimum during training. Experimenting with a different optimizer, perhaps one more specialized than Adam, and exploring momentum adjustments, could also lead to better performance.
+The selection of learning rate and batch size has also impacted the results. It is possible that the model may have become stuck in a local minimum during training. Experimenting with a different optimizer, perhaps one more specialized than Adam, and exploring momentum adjustments, could also lead to better performance.
+
+Finally, another source of potential improvement comes from outside the model itself: the cutoff probability for when a category is considered is currently set at 0.5. This threshold is external to the model to provide greater flexibility, as it is simply a sigmoid function applied to the model's end results to put them on the scale between 0 and 1. By lowering this probability threshold, we may be able to classify some of the more underrepresented categories correctly. However, the trade-off here is that this will also increase the false positive rate, making the probability threshold yet another important consideration in the overall performance.
+
+Side Note: It apparently at least classifies correctly the article abstract from the Kaggle page of the dataset :) 
 

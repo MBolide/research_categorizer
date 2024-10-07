@@ -81,7 +81,7 @@ def predict_categories(abstract):
         fin_outputs.extend(torch.sigmoid(outputs).cpu().detach().numpy().tolist())
 
     #Process the output to predicted categories
-    final_outputs = np.array(fin_outputs) >=0.5
+    final_outputs = np.array(fin_outputs) >=0.4
     final_outputs = final_outputs.astype(int)
     predicted_categories_nested = mlb.inverse_transform(final_outputs)
     predicted_categories = list(itertools.chain(*predicted_categories_nested))
